@@ -1,0 +1,4 @@
+(
+  title: "Space Launch Trainer",
+  dimensions: Some((800, 600)),
+)
