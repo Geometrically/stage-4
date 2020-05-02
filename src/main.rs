@@ -6,6 +6,7 @@ use amethyst::{
         RenderingBundle,
     },
     utils::application_root_dir,
+    core::transform::TransformBundle,
 };
 
 mod slt;
@@ -18,7 +19,9 @@ fn main() -> amethyst::Result<()> {
     let app_root = application_root_dir()?;
 
     let resources = app_root.join("resources");
+
     let display_config = resources.join("display.ron");
+    let binding_config = resources.join("bindings.ron");
 
     let game_data = GameDataBuilder::default()
         .with_bundle(
@@ -28,9 +31,11 @@ fn main() -> amethyst::Result<()> {
                         .with_clear([0.0, 0.0, 0.0, 1.0]),
                 )
                 .with_plugin(RenderFlat2D::default()),
-        )?;
+        )?
+        .with_bundle(TransformBundle::new())?;
 
     let mut game = Application::new(resources, SpaceLaunchTrainer, game_data)?;
     game.run();
+
     Ok(())
 }
