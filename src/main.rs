@@ -5,7 +5,9 @@ use amethyst::{
         types::DefaultBackend,
         RenderingBundle,
     },
+    ui::{RenderUi, UiBundle},
     utils::application_root_dir,
+    utils::fps_counter::FpsCounterBundle,
     core::transform::TransformBundle,
     input::{InputBundle, StringBindings}
 };
@@ -35,11 +37,16 @@ fn main() -> amethyst::Result<()> {
                     RenderToWindow::from_config_path(display_config)?
                         .with_clear([0.0, 0.0, 0.0, 1.0]),
                 )
-                .with_plugin(RenderFlat2D::default()),
+                .with_plugin(RenderFlat2D::default())
+                .with_plugin(RenderUi::default()),
         )?
         .with_bundle(TransformBundle::new())?
         .with_bundle(input_bundle)?
-        .with(systems::RocketSystem, "rocket_system", &["input_system"]);
+        .with_bundle(UiBundle::<StringBindings>::new())?
+        .with_bundle(FpsCounterBundle::default())?
+        .with(systems::RocketSystem, "rocket_system", &["input_system"])
+        .with(systems::MoveCameraSystem, "camera_system", &[])
+        .with(systems::SpawnAsteroidSystem, "asteroid_system", &[]);
 
     let mut game = Application::new(resources, SpaceLaunchTrainer, game_data)?;
     game.run();
