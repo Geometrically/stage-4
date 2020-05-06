@@ -1,6 +1,6 @@
 use amethyst::{
     assets::{AssetStorage, Loader, Handle},
-    core::{Transform},
+    core::{Transform, math::Vector3},
     ecs::{Component, DenseVecStorage, Entity},
     prelude::*,
     renderer::{Camera, ImageFormat, SpriteRender, SpriteSheet, SpriteSheetFormat, Texture},
@@ -11,10 +11,10 @@ use rand::Rng;
 pub const ARENA_HEIGHT : f32 = 1000.0;
 pub const ARENA_WIDTH : f32 = 1000.0;
 
-pub const ASTEROID_RADIUS : f32 = 30.0;
+pub const ASTEROID_RADIUS : f32 = 18.0;
 
-pub const ROCKET_WIDTH : f32 = 80.0;
-pub const ROCKET_HEIGHT : f32 = 100.0;
+pub const ROCKET_WIDTH : f32 = 30.0;
+pub const ROCKET_HEIGHT : f32 = 50.0;
 
 pub const ROCKET_X_SPEED : f32 = 400.0;
 pub const ROCKET_Y_SPEED : f32 = 200.0;
@@ -47,11 +47,11 @@ impl SimpleState for SpaceLaunchTrainer {
 
         let mut rng = rand::thread_rng();
         for _x in 0..15 {
-            let x_roll = rng.gen_range(1, 9);
-            let y_roll = rng.gen_range(1, 9);
+            let x_roll = rng.gen_range(0, 10);
+            let y_roll = rng.gen_range(0, 10);
             let sprite_roll = rng.gen_range(0, 2);
 
-            initialise_asteroid(world, asteroids_sprite.clone(), 50.0 + (x_roll as f32) * 100.0, 50.0 + (y_roll as f32) * 100.0, sprite_roll);
+            initialise_asteroid(world, asteroids_sprite.clone(), 25.0 + (x_roll as f32) * 100.0, 550.0 + (y_roll as f32) * 100.0, sprite_roll);
         }
     }
 }
@@ -59,6 +59,8 @@ impl SimpleState for SpaceLaunchTrainer {
 pub struct Rocket {
     pub width: f32,
     pub height: f32,
+
+    pub y_speed: f32,
 }
 
 impl Rocket {
@@ -66,6 +68,7 @@ impl Rocket {
         Rocket {
             width: ROCKET_WIDTH,
             height: ROCKET_HEIGHT,
+            y_speed: ROCKET_Y_SPEED,
         }
     }
 }
@@ -102,6 +105,7 @@ fn initialise_rocket(world: &mut World, sprite_sheet_handle: Handle<SpriteSheet>
     };
 
     rocket_transform.set_translation_xyz(ARENA_WIDTH / 2.0, ARENA_HEIGHT / 4.0, 0.0);
+    rocket_transform.set_scale(Vector3::new(0.5, 0.5, 0.0));
 
     world.create_entity()
         .with(Rocket::new())
@@ -162,7 +166,7 @@ fn initialise_scoreboard(world: &mut World) {
         .with(status_transform)
         .with(UiText::new(
             font.clone(),
-            "Space Launch Trainer".to_string(),
+            "Asteroids".to_string(),
             [1., 1., 1., 1.],
             25.,
         ))

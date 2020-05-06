@@ -3,7 +3,7 @@ use amethyst::derive::SystemDesc;
 use amethyst::ecs::{Join, Read, ReadStorage, System, SystemData, WriteStorage};
 use amethyst::input::{InputHandler, StringBindings};
 
-use crate::slt::{Rocket, ARENA_WIDTH, ROCKET_WIDTH, ROCKET_Y_SPEED, ROCKET_X_SPEED};
+use crate::slt::{Rocket, ARENA_WIDTH, ROCKET_WIDTH, ROCKET_X_SPEED};
 
 #[derive(SystemDesc)]
 pub struct RocketSystem;
@@ -20,7 +20,7 @@ impl<'s> System<'s> for RocketSystem {
         let x_move = input.axis_value("rocketship").unwrap();
         let scaled_movement = ROCKET_X_SPEED * time.delta_seconds() * x_move as f32;
 
-        for (_, transform) in (&rockets, &mut transforms).join() {
+        for (rocket, transform) in (&rockets, &mut transforms).join() {
             let rocket_x = transform.translation().x;
             let rocket_y = transform.translation().y;
 
@@ -29,7 +29,7 @@ impl<'s> System<'s> for RocketSystem {
                 .max(ROCKET_WIDTH * 0.5),
             );
 
-            transform.set_translation_y(rocket_y + ROCKET_Y_SPEED * time.delta_seconds());
+            transform.set_translation_y(rocket_y + rocket.y_speed * time.delta_seconds());
         }
     }
 }
