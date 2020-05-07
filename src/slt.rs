@@ -7,6 +7,7 @@ use amethyst::{
     ui::{Anchor, TtfFormat, UiText, UiTransform},
 };
 use rand::Rng;
+use std::vec::Vec;
 
 pub const ARENA_HEIGHT : f32 = 1000.0;
 pub const ARENA_WIDTH : f32 = 1000.0;
@@ -30,7 +31,9 @@ pub struct ScoreText {
     pub status : Entity,
 }
 
-pub struct SpaceLaunchTrainer;
+pub struct SpaceLaunchTrainer {
+    pub current_entities: Vec<Entity>,
+}
 
 impl SimpleState for SpaceLaunchTrainer {
     fn on_start(&mut self, data: StateData<'_, GameData<'_, '_>>) {
@@ -41,9 +44,11 @@ impl SimpleState for SpaceLaunchTrainer {
 
         world.register::<Asteroid>();
 
-        initialise_rocket(world, rocket_sprite);
-        initialise_camera(world);
-        initialise_scoreboard(world);
+        self.current_entities.push(initialise_rocket(world, rocket_sprite));
+        self.current_entities.push(initialise_camera(world));
+        self.current_entities.append(&mut initialise_scoreboard(world));
+
+        println!("lo;");
 
         let mut rng = rand::thread_rng();
         for _x in 0..15 {
@@ -51,8 +56,25 @@ impl SimpleState for SpaceLaunchTrainer {
             let y_roll = rng.gen_range(0, 10);
             let sprite_roll = rng.gen_range(0, 2);
 
-            initialise_asteroid(world, asteroids_sprite.clone(), 25.0 + (x_roll as f32) * 100.0, 550.0 + (y_roll as f32) * 100.0, sprite_roll);
+            self.current_entities.push(initialise_asteroid(world, asteroids_sprite.clone(), 25.0 + (x_roll as f32) * 100.0, 550.0 + (y_roll as f32) * 100.0, sprite_roll));
         }
+    }
+    fn update(&mut self, data: &mut StateData<'_, GameData<'_, '_>>) -> SimpleTrans {
+        let world = &data.world;
+        let fetched = world.try_fetch_mut::<ScoreBoard>();
+
+        if let Some(mut scores) = fetched {
+            if scores.status == "Game Over".to_string() {
+                scores.status = "".to_string();
+                for current_entity in &self.current_entities {
+
+                }
+
+                return Trans::Switch(Box::new(SpaceLaunchTrainer { current_entities: vec![] }))
+            }
+        }
+
+        Trans::None
     }
 }
 
@@ -85,7 +107,7 @@ impl Component for Asteroid {
     type Storage = DenseVecStorage<Self>;
 }
 
-fn initialise_camera(world: &mut World) {
+fn initialise_camera(world: &mut World) -> Entity{
     let mut transform = Transform::default();
     transform.set_translation_xyz(ARENA_WIDTH * 0.5, ARENA_HEIGHT * 0.5, 1.0);
 
@@ -93,10 +115,10 @@ fn initialise_camera(world: &mut World) {
         .create_entity()
         .with(Camera::standard_2d(ARENA_WIDTH, ARENA_HEIGHT))
         .with(transform)
-        .build();
+        .build()
 }
 
-fn initialise_rocket(world: &mut World, sprite_sheet_handle: Handle<SpriteSheet>) {
+fn initialise_rocket(world: &mut World, sprite_sheet_handle: Handle<SpriteSheet>) -> Entity{
     let mut rocket_transform = Transform::default();
 
     let sprite_render = SpriteRender {
@@ -111,10 +133,10 @@ fn initialise_rocket(world: &mut World, sprite_sheet_handle: Handle<SpriteSheet>
         .with(Rocket::new())
         .with(rocket_transform)
         .with(sprite_render)
-        .build();
+        .build()
 }
 
-pub fn initialise_asteroid(world: &mut World, sprite_sheet_handle: Handle<SpriteSheet>, x: f32, y: f32, sprite: usize) {
+pub fn initialise_asteroid(world: &mut World, sprite_sheet_handle: Handle<SpriteSheet>, x: f32, y: f32, sprite: usize) -> Entity {
     let mut asteroid_transform = Transform::default();
 
     let sprite_render = SpriteRender {
@@ -130,10 +152,10 @@ pub fn initialise_asteroid(world: &mut World, sprite_sheet_handle: Handle<Sprite
         })
         .with(asteroid_transform)
         .with(sprite_render)
-        .build();
+        .build()
 }
 
-fn initialise_scoreboard(world: &mut World) {
+fn initialise_scoreboard(world: &mut World) -> Vec<Entity>{
     let font = world.read_resource::<Loader>().load(
         "font/square.ttf",
         TtfFormat,
@@ -173,6 +195,8 @@ fn initialise_scoreboard(world: &mut World) {
         .build();
 
     world.insert(ScoreText { score, status });
+
+    return vec![score, status];
 }
 
 
