@@ -48,7 +48,7 @@ fn main() -> amethyst::Result<()> {
         .with(systems::MoveCameraSystem, "camera_system", &[])
         .with(systems::SpawnAsteroidSystem, "asteroid_system", &[]);
 
-    let mut game = Application::new(resources, SpaceLaunchTrainer { current_entities: vec![] }, game_data)?;
+    let mut game = Application::new(resources, SpaceLaunchTrainer { game_over: false }, game_data)?;
     game.run();
 
     Ok(())

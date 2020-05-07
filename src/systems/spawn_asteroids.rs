@@ -1,6 +1,6 @@
 use amethyst::core::{Transform};
 use amethyst::derive::SystemDesc;
-use amethyst::ecs::prelude::{Join, ReadExpect, System, SystemData, Write, WriteStorage, ReadStorage};
+use amethyst::ecs::prelude::{Join, System, SystemData, Write, WriteStorage, ReadStorage, ReadExpect};
 use amethyst::ui::UiText;
 
 use crate::slt::{Rocket, Asteroid, ARENA_HEIGHT, ROCKET_WIDTH, ROCKET_HEIGHT, ScoreBoard, ScoreText};
@@ -50,12 +50,19 @@ impl<'s> System<'s> for SpawnAsteroidSystem {
 
             if scores.status != "Game Over".to_string() {
                 let s = "-.-. --- -.. . .. ... ..--- ----. .---- ----. ----- END";
-                let ss: String = s.chars().skip(0).take((scores.score / 5) as usize).collect();
-
-                scores.status = ss.to_string();
+                let current_morse = s.chars().nth(((scores.score / 5) % s.len() as i32) as usize).unwrap();
 
                 if let Some(text) = ui_text.get_mut(score_text.status) {
-                    text.text = scores.status.to_string();
+                    if current_morse == '-' {
+                        text.color = [0.13, 0.65, 0.87, 1.];
+                    } else if current_morse == '.'
+                    {
+                        text.color = [0.4, 0.95, 0.07, 1.];
+                    } else if current_morse == ' ' {
+                        text.color = [1., 1., 1., 1.];
+                    } else {
+                        text.color = [0.95, 0.07, 0.07, 1.];
+                    }
                 }
             }
 

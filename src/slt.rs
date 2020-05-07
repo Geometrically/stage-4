@@ -32,7 +32,7 @@ pub struct ScoreText {
 }
 
 pub struct SpaceLaunchTrainer {
-    pub current_entities: Vec<Entity>,
+    pub game_over: bool,
 }
 
 impl SimpleState for SpaceLaunchTrainer {
@@ -44,11 +44,9 @@ impl SimpleState for SpaceLaunchTrainer {
 
         world.register::<Asteroid>();
 
-        self.current_entities.push(initialise_rocket(world, rocket_sprite));
-        self.current_entities.push(initialise_camera(world));
-        self.current_entities.append(&mut initialise_scoreboard(world));
-
-        println!("lo;");
+        initialise_rocket(world, rocket_sprite);
+        initialise_camera(world);
+        initialise_scoreboard(world);
 
         let mut rng = rand::thread_rng();
         for _x in 0..15 {
@@ -56,24 +54,30 @@ impl SimpleState for SpaceLaunchTrainer {
             let y_roll = rng.gen_range(0, 10);
             let sprite_roll = rng.gen_range(0, 2);
 
-            self.current_entities.push(initialise_asteroid(world, asteroids_sprite.clone(), 25.0 + (x_roll as f32) * 100.0, 550.0 + (y_roll as f32) * 100.0, sprite_roll));
+            initialise_asteroid(world, asteroids_sprite.clone(), 25.0 + (x_roll as f32) * 100.0, 550.0 + (y_roll as f32) * 100.0, sprite_roll);
         }
     }
-    fn update(&mut self, data: &mut StateData<'_, GameData<'_, '_>>) -> SimpleTrans {
-        let world = &data.world;
-        let fetched = world.try_fetch_mut::<ScoreBoard>();
+    fn fixed_update(&mut self, mut data: StateData<'_, GameData<'_, '_>>) -> SimpleTrans {
+        let world = &mut data.world;
 
-        if let Some(mut scores) = fetched {
-            if scores.status == "Game Over".to_string() {
-                scores.status = "".to_string();
-                for current_entity in &self.current_entities {
+        let mut scores = world.write_resource::<ScoreBoard>();
 
-                }
+        if scores.status == "Game Over" {
+            scores.score = 0;
+            scores.status = "".to_string();
 
-                return Trans::Switch(Box::new(SpaceLaunchTrainer { current_entities: vec![] }))
-            }
+            self.game_over = true;
         }
+        Trans::None
+    }
+    fn update(&mut self, data: &mut StateData<'_, GameData<'_, '_>>) -> SimpleTrans {
+        if self.game_over {
+            let world = &mut data.world;
 
+            world.delete_all();
+
+            return Trans::Push(Box::new(SpaceLaunchTrainer { game_over: false }));
+        }
         Trans::None
     }
 }
