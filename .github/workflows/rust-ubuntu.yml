@@ -1,0 +1,25 @@
+name: Rust Ubuntu
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install libasound2
+        run: sudo apt install libasound2-dev
+      - uses: actions/checkout@v2
+      - name: Build
+        run: cargo build --verbose --no-default-features
+      - name: "Upload Artifacts"
+        uses: actions/upload-artifact@v1
+        with:
+          name: ${{ matrix.os }}
+          path: target/debug
