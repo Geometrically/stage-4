@@ -15,7 +15,13 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Build
-        run: cargo build --verbose --no-default-features
+        run: cargo build --verbose --no-default-features --features vulkan
+
+      - name: Cache Leftovers
+        uses: actions/cache@v2
+        with:
+          path: ~/target/debug
+
       - name: "Upload Artifacts"
         uses: actions/upload-artifact@v1
         with:
