@@ -13,14 +13,12 @@ jobs:
   build:
     strategy:
       matrix:
-        os: [ macos-latest, windows-latest ]
+        os: [ ubuntu-latest, macos-latest, windows-latest ]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
       - name: Build
-        run: cargo build --verbose
-      - name: Run tests
-        run: cargo test --verbose
+        run: cargo build --verbose --no-default-features\
       - name: "Upload Artifacts"
         uses: actions/upload-artifact@v1
         with:
