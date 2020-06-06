@@ -1,4 +1,4 @@
-name: Rust
+name: Rust Ubuntu
 
 on:
   push:
@@ -11,11 +11,10 @@ env:
 
 jobs:
   build:
-    strategy:
-      matrix:
-        os: [ macos-latest, windows-latest ]
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     steps:
+      - name: Install xmllint
+        run: sudo apt install libasound2-dev
       - uses: actions/checkout@v2
       - name: Build
         run: cargo build --verbose
