@@ -13,15 +13,15 @@ jobs:
   build:
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Build
-        run: cargo build --verbose --no-default-features --features vulkan
-
       - name: Cache Leftovers
         uses: actions/cache@v2
         with:
           path: ~/target/debug
           key: rust-windows
+
+      - uses: actions/checkout@v2
+      - name: Build
+        run: cargo build --verbose --no-default-features --features vulkan
 
       - name: "Upload Artifacts"
         uses: actions/upload-artifact@v1

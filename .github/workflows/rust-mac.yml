@@ -13,15 +13,15 @@ jobs:
   build:
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Build
-        run: cargo build --verbose --no-default-features --features metal
-
       - name: Cache Leftovers
         uses: actions/cache@v2
         with:
           path: ~/target/debug
           key: rust-mac
+
+      - uses: actions/checkout@v2
+      - name: Build
+        run: cargo build --verbose --no-default-features --features metal
 
       - name: "Upload Artifacts"
         uses: actions/upload-artifact@v1
