@@ -49,15 +49,15 @@ impl<'s> System<'s> for SpawnAsteroidSystem {
             }
 
             if scores.status != "Game Over".to_string() && scores.score % 8 == 0 {
-                let s = "-.-. --- -.. . .. ... ..--- ----. .---- ----. ----- END";
+                let s = "..--- ----. .---- ----. ----- END";
                 let current_morse = s.chars().nth(((scores.score / 8) % s.len() as i32) as usize).unwrap();
 
                 if let Some(text) = ui_text.get_mut(score_text.status) {
                     if current_morse == '-' {
-                        text.color = [0.13, 0.65, 0.87, 1.];
+                        text.color = [0., 0., 0.97, 1.];
                     } else if current_morse == '.'
                     {
-                        text.color = [0.4, 0.95, 0.07, 1.];
+                        text.color = [0., 0.95, 0., 1.];
                     } else if current_morse == ' ' {
                         text.color = [1., 1., 1., 1.];
                     } else {
@@ -66,18 +66,18 @@ impl<'s> System<'s> for SpawnAsteroidSystem {
                 }
             } else if scores.score % 4 == 0 {
                 if let Some(text) = ui_text.get_mut(score_text.status) {
-                    text.color = [0.95, 0.87, 0.07, 1.]
+                    text.color = [1., 1., 0., 1.]
                 }
             }
 
             if asteroid_y < (&rocket_y - ARENA_HEIGHT / 4.0) {
                 let mut rng = rand::thread_rng();
-                let roll = rng.gen_range(0, 10);
+                let roll = rng.gen_range(0, 11);
 
                 rocket.y_speed += 1.0;
 
                 asteroid_transform.set_translation_y(&rocket_y + (3.1 * ARENA_HEIGHT) / 4.0);
-                asteroid_transform.set_translation_x((40 + 100 * roll) as f32);
+                asteroid_transform.set_translation_x((50 + 100 * roll) as f32);
 
                 scores.score = scores.score + 1;
 

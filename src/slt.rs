@@ -14,7 +14,7 @@ pub const ARENA_WIDTH : f32 = 1000.0;
 
 pub const ASTEROID_RADIUS : f32 = 18.0;
 
-pub const ROCKET_WIDTH : f32 = 30.0;
+pub const ROCKET_WIDTH : f32 = 50.0;
 pub const ROCKET_HEIGHT : f32 = 50.0;
 
 pub const ROCKET_X_SPEED : f32 = 400.0;
@@ -49,12 +49,12 @@ impl SimpleState for SpaceLaunchTrainer {
         initialise_scoreboard(world);
 
         let mut rng = rand::thread_rng();
-        for _x in 0..15 {
-            let x_roll = rng.gen_range(0, 10);
+        for _x in 0..18 {
+            let x_roll = rng.gen_range(0, 11);
             let y_roll = rng.gen_range(0, 10);
             let sprite_roll = rng.gen_range(0, 2);
 
-            initialise_asteroid(world, asteroids_sprite.clone(), 25.0 + (x_roll as f32) * 100.0, 550.0 + (y_roll as f32) * 100.0, sprite_roll);
+            initialise_asteroid(world, asteroids_sprite.clone(), 15.0 + (x_roll as f32) * 100.0, 550.0 + (y_roll as f32) * 100.0, sprite_roll);
         }
     }
     fn fixed_update(&mut self, mut data: StateData<'_, GameData<'_, '_>>) -> SimpleTrans {
