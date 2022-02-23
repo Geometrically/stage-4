@@ -77,7 +77,7 @@ impl<'s> System<'s> for SpawnAsteroidSystem {
                 let mut rng = rand::thread_rng();
                 let roll = rng.gen_range(0, 11);
 
-                rocket.y_speed += 1.0;
+                rocket.y_speed += 0.5;
 
                 asteroid_transform.set_translation_y(&rocket_y + (3.1 * ARENA_HEIGHT) / 4.0);
                 asteroid_transform.set_translation_x((50 + 100 * roll) as f32);
@@ -90,7 +90,7 @@ impl<'s> System<'s> for SpawnAsteroidSystem {
 
         scores.tick += 1;
 
-        if scores.tick % 40 == 0 {
+        if scores.tick % 20 == 0 {
             scores.score += 1;
         }
     }

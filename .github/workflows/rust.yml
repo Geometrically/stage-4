@@ -47,4 +47,6 @@ jobs:
         if: matrix.os != 'windows-latest'
         with:
           name: stage-${{ matrix.os }}
-          path: target/release/stage-4
+          path: |
+            target/release/stage-4
+            resources
