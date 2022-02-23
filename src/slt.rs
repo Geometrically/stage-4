@@ -8,6 +8,7 @@ use amethyst::{
 };
 use rand::Rng;
 use std::vec::Vec;
+use amethyst::ui::LineMode;
 
 pub const ARENA_HEIGHT : f32 = 1000.0;
 pub const ARENA_WIDTH : f32 = 1000.0;
@@ -179,6 +180,8 @@ fn initialise_scoreboard(world: &mut World) -> Vec<Entity>{
             "0".to_string(),
             [1., 1., 1., 1.],
             50.,
+            LineMode::Single,
+            Anchor::TopMiddle,
         ))
         .build();
 
@@ -195,6 +198,8 @@ fn initialise_scoreboard(world: &mut World) -> Vec<Entity>{
             "Asteroids".to_string(),
             [1., 1., 1., 1.],
             25.,
+            LineMode::Single,
+            Anchor::TopMiddle,
         ))
         .build();
 

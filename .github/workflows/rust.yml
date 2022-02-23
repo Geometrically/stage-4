@@ -1,0 +1,35 @@
+on: [push]
+
+name: build
+
+jobs:
+  check:
+    name: Rust project
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ macos-latest, windows-latest, ubuntu-latest ]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install latest nightly
+        uses: actions-rs/toolchain@v1
+      - uses: actions-rs/cargo@v1
+        if: matrix.os == "macos-latest"
+        with:
+          command: build
+          args: --release --no-default-features --features metal
+      - uses: actions-rs/cargo@v1
+        if: matrix.os != "macos-latest"
+        with:
+          command: build
+          args: --release --no-default-features --features vulkan
+      - uses: actions/upload-artifact@v2
+        if: matrix.os == "windows-latest"
+        with:
+          name: stage-${{ matrix.os }}
+          path: target/release/stage-4.exe
+      - uses: actions/upload-artifact@v2
+        if: matrix.os != "windows-latest"
+        with:
+          name: stage-${{ matrix.os }}
+          path: target/release/stage-4

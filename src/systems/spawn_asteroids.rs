@@ -49,10 +49,11 @@ impl<'s> System<'s> for SpawnAsteroidSystem {
             }
 
             if scores.status != "Game Over".to_string() && scores.score % 8 == 0 {
-                let s = "..--- ----. .---- ----. ----- END";
+                let s = "-. ..- -- . .-. ..- ... . ... - --.. . .-. ..- -- -.-. --- -. .-.. .. --. . - . ... .. --. -. .. ..-. .. -.-. .- - .. --- -. . -- . - .--. . .-. ..-. .. -.-. . - . . -. .. --. -- .- - . -- ENDENDENDEND";
                 let current_morse = s.chars().nth(((scores.score / 8) % s.len() as i32) as usize).unwrap();
 
                 if let Some(text) = ui_text.get_mut(score_text.status) {
+                    text.text = "ASTEROIDS".to_string();
                     if current_morse == '-' {
                         text.color = [0., 0., 0.97, 1.];
                     } else if current_morse == '.'
@@ -61,12 +62,14 @@ impl<'s> System<'s> for SpawnAsteroidSystem {
                     } else if current_morse == ' ' {
                         text.color = [1., 1., 1., 1.];
                     } else {
+                        text.text = "END".to_string();
                         text.color = [0.95, 0.07, 0.07, 1.];
                     }
                 }
             } else if scores.score % 4 == 0 {
                 if let Some(text) = ui_text.get_mut(score_text.status) {
-                    text.color = [1., 1., 0., 1.]
+                    text.color = [1., 1., 0., 1.];
+                    text.text = "GAP".to_string();
                 }
             }
 
