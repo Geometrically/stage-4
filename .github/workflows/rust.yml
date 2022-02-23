@@ -21,6 +21,9 @@ jobs:
         uses: actions-rs/toolchain@v1
         with:
           toolchain: 1.47
+      - name: Install Alsa (Linux)
+        if: matrix.os == 'ubuntu-latest'
+        run: sudo apt-get install -y alsa
       - name: Cargo Build (Metal)
         uses: actions-rs/cargo@v1
         if: matrix.os == 'macos-latest'
