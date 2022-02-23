@@ -23,7 +23,9 @@ jobs:
           toolchain: 1.47
       - name: Install Alsa (Linux)
         if: matrix.os == 'ubuntu-latest'
-        run: sudo apt-get install -y alsa
+        run: |
+          sudo apt-get update
+          sudo apt-get install libasound2-dev
       - name: Cargo Build (Metal)
         uses: actions-rs/cargo@v1
         if: matrix.os == 'macos-latest'
