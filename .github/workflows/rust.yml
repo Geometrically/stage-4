@@ -25,7 +25,7 @@ jobs:
         if: matrix.os == 'ubuntu-latest'
         run: |
           sudo apt-get update
-          sudo apt-get install libasound2-dev
+          sudo apt-get install libasound2-dev libxcb-shape0-dev libxcb-xfixes0-dev
       - name: Cargo Build (Metal)
         uses: actions-rs/cargo@v1
         if: matrix.os == 'macos-latest'

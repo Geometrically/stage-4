@@ -24,6 +24,7 @@ pub const ROCKET_Y_SPEED : f32 = 200.0;
 #[derive(Default)]
 pub struct ScoreBoard {
     pub score: i32,
+    pub tick: i32,
     pub status: String,
 }
 

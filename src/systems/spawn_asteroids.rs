@@ -48,9 +48,9 @@ impl<'s> System<'s> for SpawnAsteroidSystem {
                 }
             }
 
-            if scores.status != "Game Over".to_string() && scores.score % 8 == 0 {
+            if scores.status != "Game Over".to_string() && scores.score % 2 == 0 {
                 let s = "-. ..- -- . .-. ..- ... . ... - --.. . .-. ..- -- -.-. --- -. .-.. .. --. . - . ... .. --. -. .. ..-. .. -.-. .- - .. --- -. . -- . - .--. . .-. ..-. .. -.-. . - . . -. .. --. -- .- - . -- ENDENDENDEND";
-                let current_morse = s.chars().nth(((scores.score / 8) % s.len() as i32) as usize).unwrap();
+                let current_morse = s.chars().nth(((scores.score) % s.len() as i32) as usize).unwrap();
 
                 if let Some(text) = ui_text.get_mut(score_text.status) {
                     text.text = "ASTEROIDS".to_string();
@@ -66,7 +66,7 @@ impl<'s> System<'s> for SpawnAsteroidSystem {
                         text.color = [0.95, 0.07, 0.07, 1.];
                     }
                 }
-            } else if scores.score % 4 == 0 {
+            } else if scores.score % 2 == 1 {
                 if let Some(text) = ui_text.get_mut(score_text.status) {
                     text.color = [1., 1., 0., 1.];
                     text.text = "GAP".to_string();
@@ -82,12 +82,16 @@ impl<'s> System<'s> for SpawnAsteroidSystem {
                 asteroid_transform.set_translation_y(&rocket_y + (3.1 * ARENA_HEIGHT) / 4.0);
                 asteroid_transform.set_translation_x((50 + 100 * roll) as f32);
 
-                scores.score = scores.score + 1;
-
                 if let Some(text) = ui_text.get_mut(score_text.score) {
                     text.text = scores.score.to_string();
                 }
             }
+        }
+
+        scores.tick += 1;
+
+        if scores.tick % 40 == 0 {
+            scores.score += 1;
         }
     }
 }
